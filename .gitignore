@@ -4,6 +4,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+/api/src/main/generated/**/*.interp
+/api/src/main/generated/**/*.tokens
+
 ### IntelliJ IDEA ###
 .idea
 .idea/**
