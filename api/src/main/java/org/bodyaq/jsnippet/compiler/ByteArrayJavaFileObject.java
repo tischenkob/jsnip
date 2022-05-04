@@ -17,19 +17,6 @@ public class ByteArrayJavaFileObject extends SimpleJavaFileObject {
     this.className = name;
   }
 
-  public void dump() {
-    try {
-      Path dumpDir = FileSystems.getDefault().getPath("dump");
-      if (Files.notExists(dumpDir)) {
-        Files.createDirectory(dumpDir);
-      }
-      Path file = FileSystems.getDefault().getPath("dump", getName() + ".class");
-      Files.write(file, getBytes());
-    } catch (IOException ex) {
-      throw new RuntimeException(ex);
-    }
-  }
-
   @Override
   public String getName() {
     return className;

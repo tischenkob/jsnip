@@ -32,20 +32,12 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
-val lombokVersion = "1.18.24"
-val junitVersion = "5.8.2"
-
 dependencies {
     antlr("org.antlr:antlr4:4.10.1")
-    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
-    implementation("org.jetbrains:annotations:23.0.0")
-    implementation("org.projectlombok:lombok:$lombokVersion")
+    compileOnly("org.jetbrains:annotations:23.0.0")
     implementation("com.squareup:javapoet:1.13.0")
 
-    testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
-    testImplementation("org.codehaus.janino:janino:3.1.7")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testImplementation("org.assertj:assertj-core:3.22.0")
-    testImplementation("org.projectlombok:lombok:$lombokVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 }

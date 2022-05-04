@@ -15,9 +15,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 public class JavaCompilerTest {
 
   @Test
-  void javaCompilerApiTest()
-      throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException,
-          IllegalAccessException {
+  void javaCompilerApiTest() {
     JavaFileObject javaFileObject = getJavaFileObject();
 
     MemoryJavaCompiler compiler = new MemoryJavaCompiler();
@@ -36,7 +34,7 @@ public class JavaCompilerTest {
             .addStatement("System.out.println(\"Hello from memory!\")")
             .build();
 
-    TypeSpec type = TypeSpec.classBuilder("MyClass").addMethod(mainMethod).build();
+    TypeSpec type = TypeSpec.classBuilder("MyClass").addModifiers(PUBLIC).addMethod(mainMethod).build();
 
     return JavaFile.builder("", type).skipJavaLangImports(true).build().toJavaFileObject();
   }

@@ -9,9 +9,7 @@ class JavaSnippetParserTest {
 
       String code = """
                     import java.util.List;
-                    
-                    int x = addInts(1, 1);
-                    
+                    var x = 1 + 1;
                     if (x == 2) {
                       System.out.prinln("Hooray");
                     }

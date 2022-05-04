@@ -7,6 +7,9 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.bodyaq.antlr.java.JavaLexer;
 import org.bodyaq.antlr.java.JavaParser;
 import org.bodyaq.antlr.java.JavaParserBaseListener;
+import org.bodyaq.jsnippet.parser.listener.MethodCollector;
+import org.bodyaq.jsnippet.parser.listener.ProxyParseTreeListener;
+import org.bodyaq.jsnippet.parser.listener.StatementCollector;
 
 import static org.bodyaq.antlr.java.JavaParser.*;
 
@@ -16,14 +19,16 @@ public class JavaSnippetParser extends JavaParserBaseListener {
     JavaParser parser = parserFor(code);
 
     var context = parser.compilationUnit();
-    var walker = ParseTreeWalker.DEFAULT;
-    var listener = new TopLevelStatementListener();
+    var statementCollector = new StatementCollector();
+    var methodCollector = new MethodCollector();
+    var proxyListener = new ProxyParseTreeListener(
+        statementCollector,
+        methodCollector
+    );
 
-    walker.walk(listener, context);
+    ParseTreeWalker.DEFAULT.walk(proxyListener, context);
 
-    listener.getStatements().forEach(stmt -> System.out.println("Found a statement: " + stmt));
-
-    return new JavaSnippetParser();
+    return null;
   }
 
   private static JavaParser parserFor(String raw) {
