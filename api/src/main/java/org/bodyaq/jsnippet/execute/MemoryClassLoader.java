@@ -1,4 +1,6 @@
-package org.bodyaq.jsnippet.compiler;
+package org.bodyaq.jsnippet.execute;
+
+import org.bodyaq.jsnippet.compile.ByteArrayJavaFileObject;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -25,8 +27,6 @@ class MemoryClassLoader extends ClassLoader {
 
   @Override
   protected Class<?> findClass(String name) throws ClassNotFoundException {
-    assert name != null;
-
     byte[] data = this.classes.get(name);
     if (data == null) {
       data = this.classes.get(name.replace('.', '/') + ".class");
@@ -34,7 +34,6 @@ class MemoryClassLoader extends ClassLoader {
         throw new ClassNotFoundException(name);
       }
     }
-
     return super.defineClass(name, data, 0, data.length, this.getClass().getProtectionDomain());
   }
 }

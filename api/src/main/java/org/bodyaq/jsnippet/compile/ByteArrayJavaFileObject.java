@@ -1,11 +1,11 @@
-package org.bodyaq.jsnippet.compiler;
+package org.bodyaq.jsnippet.compile;
 
 import javax.tools.SimpleJavaFileObject;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 public class ByteArrayJavaFileObject extends SimpleJavaFileObject {
   private final String className;

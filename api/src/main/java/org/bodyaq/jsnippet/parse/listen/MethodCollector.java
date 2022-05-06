@@ -1,12 +1,13 @@
-package org.bodyaq.jsnippet.parser.listener;
+package org.bodyaq.jsnippet.parse.listen;
 
 import org.bodyaq.antlr.java.JavaParserBaseListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.bodyaq.antlr.java.JavaParser.*;
-import static org.bodyaq.jsnippet.parser.ParseTrees.hasParentOfType;
+import static org.bodyaq.antlr.java.JavaParser.ClassDeclarationContext;
+import static org.bodyaq.antlr.java.JavaParser.MethodDeclarationContext;
+import static org.bodyaq.jsnippet.parse.ParseTrees.hasParentOfType;
 
 public class MethodCollector extends JavaParserBaseListener {
     public List<MethodDeclarationContext> getMethods() {

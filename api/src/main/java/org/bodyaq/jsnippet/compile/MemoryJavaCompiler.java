@@ -1,19 +1,11 @@
-package org.bodyaq.jsnippet.compiler;
+package org.bodyaq.jsnippet.compile;
 
 import javax.tools.*;
 import java.io.IOException;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static java.lang.invoke.MethodHandles.*;
-import static java.lang.invoke.MethodType.*;
 import static javax.tools.JavaCompiler.CompilationTask;
 import static javax.tools.JavaFileObject.Kind;
 
@@ -43,15 +35,5 @@ public class MemoryJavaCompiler {
         task.call();
 
         return compiledClasses;
-    }
-
-    public void execute(Collection<ByteArrayJavaFileObject> compiledClasses, String mainClassName, String[] args) {
-        try {
-            Class<?> generatedClass = Class.forName(mainClassName, true, new MemoryClassLoader(compiledClasses));
-            MethodHandle mainMethodHandle = publicLookup().findStatic(generatedClass, "main", methodType(void.class, String[].class));
-            mainMethodHandle.invoke((Object[]) args);
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
     }
 }

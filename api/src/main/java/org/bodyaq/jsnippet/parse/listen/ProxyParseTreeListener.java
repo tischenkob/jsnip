@@ -1,17 +1,13 @@
-package org.bodyaq.jsnippet.parser.listener;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+package org.bodyaq.jsnippet.parse.listen;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ErrorNode;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ProxyParseTreeListener implements ParseTreeListener {
     private List<ParseTreeListener> listeners;
