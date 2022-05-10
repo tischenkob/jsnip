@@ -22,6 +22,7 @@ public class JSnippet implements Runnable {
 
     private boolean exportJava = false;
     private boolean exportClass = false;
+    private boolean exportNative = false;
 
     public JSnippet(File scriptFile, String... scriptArgs) {
         this.scriptFile = scriptFile;
@@ -34,16 +35,23 @@ public class JSnippet implements Runnable {
             String script = Files.readString(scriptFile.toPath());
             ScriptContent scriptContent = parse(script);
 
-            String classname = stripExtension(scriptFile.getName());
+            String classname = getScriptClassName();
             JavaFile javaFile = JavaFiles.newFromScript(classname, scriptContent);
             if (exportJava) {
                 saveJavaFile(javaFile);
+                return;
             }
 
             MemoryJavaCompiler compiler = new MemoryJavaCompiler();
             Collection<ByteArrayJavaFileObject> compiledObjects = compiler.compile(javaFile.toJavaFileObject());
             if (exportClass) {
                 saveClassFiles(compiledObjects);
+                return;
+            }
+
+            if (exportNative) {
+                saveNativeExecutable(compiledObjects);
+                return;
             }
 
             MemoryClassExecutor executor = new MemoryClassExecutor();
@@ -53,24 +61,52 @@ public class JSnippet implements Runnable {
         }
     }
 
+    private void saveNativeExecutable(Collection<ByteArrayJavaFileObject> compiledObjects) throws IOException {
+        saveClassFiles(compiledObjects);
+        new ProcessBuilder()
+            .command("native-image", getScriptClassName())
+            .directory(new File(getCurrentDirectory()))
+            .inheritIO()
+            .start();
+        deleteClassFiles(compiledObjects);
+    }
+
+    private void deleteClassFiles(Collection<ByteArrayJavaFileObject> compiledObjects) throws IOException {
+        for (ByteArrayJavaFileObject object : compiledObjects) {
+            Files.deleteIfExists(
+                Path.of(getCurrentDirectory() + object.getName())
+            );
+        }
+    }
+
     private static String stripExtension(String path) {
         return path.substring(0, path.lastIndexOf('.'));
     }
 
     private void saveJavaFile(JavaFile javaFile) throws IOException {
-        String directoryPath = directoryPathOf(scriptFile.getAbsolutePath()) + File.separatorChar;
-        Path javaFilePath = Path.of(directoryPath + stripExtension(scriptFile.getName()) + ".java");
+        String directoryPath = getCurrentDirectory();
+        Path javaFilePath = Path.of(directoryPath + getScriptClassName() + ".java");
         Files.writeString(
             javaFilePath, javaFile.toString(), StandardOpenOption.WRITE, StandardOpenOption.CREATE
         );
     }
 
-    private void saveClassFiles(Collection<ByteArrayJavaFileObject> objects) {
-
+    private String getScriptClassName() {
+        return stripExtension(scriptFile.getName());
     }
 
-    private String directoryPathOf(String path) {
-        return path.substring(0, path.lastIndexOf(File.separatorChar));
+    private String getCurrentDirectory() {
+        String path = scriptFile.getAbsolutePath();
+        String dirPath = path.substring(0, path.lastIndexOf(File.separatorChar));
+        return dirPath + File.separatorChar;
+    }
+
+    private void saveClassFiles(Collection<ByteArrayJavaFileObject> objects) throws IOException {
+        String directoryPath = getCurrentDirectory();
+        for (var cls: objects) {
+            Path path = Path.of(directoryPath + cls.getName() + ".class");
+            Files.write(path, cls.getBytes(), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+        }
     }
 
     public void setExportJava(boolean exportJava) {
@@ -79,5 +115,9 @@ public class JSnippet implements Runnable {
 
     public void setExportClass(boolean exportClass) {
         this.exportClass = exportClass;
+    }
+
+    public void setExportNative(boolean exportNative) {
+        this.exportNative = exportNative;
     }
 }
