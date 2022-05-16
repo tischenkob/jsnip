@@ -13,11 +13,7 @@ public class ProxyParseTreeListener implements ParseTreeListener {
     private List<ParseTreeListener> listeners;
 
     public ProxyParseTreeListener(ParseTreeListener... listeners) {
-        this(Arrays.asList(listeners));
-    }
-
-    public ProxyParseTreeListener(List<ParseTreeListener> listeners) {
-        setListeners(listeners);
+        setListeners(Arrays.asList(listeners));
     }
 
     @Override

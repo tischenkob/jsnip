@@ -1,7 +1,6 @@
 package org.bodyaq.jsnippet.template;
 
 import com.squareup.javapoet.*;
-import org.bodyaq.antlr.java.JavaParser;
 import org.bodyaq.jsnippet.parse.ParseTrees;
 
 import java.lang.reflect.Constructor;
@@ -16,8 +15,11 @@ import static com.squareup.javapoet.MethodSpec.Builder;
 import static com.squareup.javapoet.MethodSpec.methodBuilder;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.joining;
-import static javax.lang.model.element.Modifier.*;
-import static org.bodyaq.antlr.java.JavaParser.MethodDeclarationContext;
+import static javax.lang.model.element.Modifier.FINAL;
+import static javax.lang.model.element.Modifier.PRIVATE;
+import static javax.lang.model.element.Modifier.PUBLIC;
+import static javax.lang.model.element.Modifier.STATIC;
+import static org.bodyaq.antlr.java.JavaParser.*;
 import static org.bodyaq.jsnippet.parse.ScriptParser.ScriptContent;
 
 public class JavaFiles {
@@ -106,22 +108,20 @@ public class JavaFiles {
                    .build();
     }
 
-    private static ParameterSpec toParameterSpec(JavaParser.FormalParameterContext parameterContext) {
-        JavaParser.TypeTypeContext type = parameterContext.typeType();
-        JavaParser.VariableDeclaratorIdContext variable = parameterContext.variableDeclaratorId();
+    private static ParameterSpec toParameterSpec(FormalParameterContext parameterContext) {
+        TypeTypeContext type = parameterContext.typeType();
+        VariableDeclaratorIdContext variable = parameterContext.variableDeclaratorId();
         return ParameterSpec.builder(typeNameOf(type.getText()), variable.identifier().getText()).build();
     }
 
     private static TypeName typeNameOf(String returnType) {
-        TypeName typeName;
         try {
             Constructor<TypeName> constructor = TypeName.class.getDeclaredConstructor(String.class);
             constructor.setAccessible(true);
-            typeName = constructor.newInstance(returnType);
+            return constructor.newInstance(returnType);
         } catch (InstantiationException | IllegalAccessException |
                  InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-        return typeName;
     }
 }

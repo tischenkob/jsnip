@@ -34,12 +34,7 @@ parser grammar JavaParser;
 options { tokenVocab=JavaLexer; }
 
 compilationUnit
-    : packageDeclaration? importDeclaration* blockStatement* (typeDeclaration | methodDeclaration)*
-    | moduleDeclaration EOF
-    ;
-
-packageDeclaration
-    : annotation* PACKAGE qualifiedName ';'
+    : importDeclaration* blockStatement* (typeDeclaration | methodDeclaration)*
     ;
 
 importDeclaration
